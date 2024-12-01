@@ -12,7 +12,7 @@ docker compose up
 
 ## Database Schema:
 
-![img.png](img.png)
+![img.png](db_schema.png)
 
 ## Database Entities Explanation:
 ### Emission Sources:
