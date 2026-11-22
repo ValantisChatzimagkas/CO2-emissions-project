@@ -1,14 +1,12 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:0.7.18 /uv /usr/local/bin/uv
 
-# Set the working directory inside the container
 WORKDIR /app
+ENV UV_COMPILE_BYTECODE=1 PATH="/app/.venv/bin:$PATH"
 
-# Copy the current directory contents into the container
-COPY . /app
+# Dependencies first so this layer is cached until the lockfile changes.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Set the default command to run the script
-CMD ["python", "synthetic_data_generation/generate_data.py"]
+COPY synthetic_data_generation ./synthetic_data_generation
+CMD ["python", "-m", "synthetic_data_generation.generate_data"]
