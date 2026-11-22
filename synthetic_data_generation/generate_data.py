@@ -2,18 +2,28 @@ import datetime
 import os
 import time
 from enum import Enum
-from typing import List
+from itertools import product
+from random import choice, randint, uniform
+
 import psycopg2
-from loguru import logger
-from sqlalchemy import Table, Column, Integer, Text, DECIMAL, ForeignKey, String, select
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.dialects.postgresql import insert
 from dotenv import load_dotenv
+from faker import Faker
+from loguru import logger
+from sqlalchemy import (
+    DECIMAL,
+    Column,
+    ForeignKey,
+    Integer,
+    MetaData,
+    String,
+    Table,
+    Text,
+    create_engine,
+    select,
+)
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
-from faker import Faker
-from random import randint, uniform, choice
-from itertools import product
 
 DATABASE_NAME = "emission_db"
 
@@ -92,7 +102,7 @@ class DataGenerator:
         :return:
         """
 
-        columns: List = [Column('id', Integer, primary_key=True, nullable=False),
+        columns: list = [Column('id', Integer, primary_key=True, nullable=False),
                          Column('name', Text, nullable=False),
                          Column('description', Text, nullable=True),
                          Column('created_at', Text, nullable=True),
@@ -118,7 +128,7 @@ class DataGenerator:
         :param table_name: Name of the table to insert data into.
         """
         # Define table structure
-        columns: List = [
+        columns: list = [
             Column('id', Integer, primary_key=True, nullable=False),
             Column('scope', Text, nullable=False),
             Column('source_name', Text, nullable=False),
@@ -168,7 +178,7 @@ class DataGenerator:
         :param table_name: Name of the table to insert data into.
         """
         # Define table structure
-        columns: List = [
+        columns: list = [
             Column('id', Integer, primary_key=True, nullable=False),
             Column('source_id', Integer, ForeignKey('emission_sources.id'), nullable=False),
             Column('factor_value', DECIMAL, nullable=False),
