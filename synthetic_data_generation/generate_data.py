@@ -317,7 +317,7 @@ def wait_for_db():
             time.sleep(delay)
             retry_counter += 1
 
-    logger.error(f'Failed to connect to database')
+    logger.error('Failed to connect to database')
 
 
 def generate_data():

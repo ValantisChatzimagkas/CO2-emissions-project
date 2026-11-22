@@ -1,6 +1,12 @@
 # CO2 Carbon Emissions Project
-This project generates synthetic data that refer to CO2 emissions from
-organizations, the CO2 emissions are categorized into SCOPE 1, SCOPE 2 and SCOPE 3 emissions.
+
+[![CI](https://github.com/ValantisChatzimagkas/CO2-emissions-project/actions/workflows/ci.yml/badge.svg)](https://github.com/ValantisChatzimagkas/CO2-emissions-project/actions/workflows/ci.yml)
+
+This project generates synthetic data about CO2 emissions from organizations,
+categorized into Scope 1, Scope 2 and Scope 3 emissions, and loads it into a PostgreSQL database
+modelled for GHG emissions tracking.
+
+**Stack:** Python · pandas · SQLAlchemy · Faker · PostgreSQL · Docker Compose
 
 
 
@@ -39,3 +45,7 @@ The Emission Logs Table records the detailed data of an organization's GHG emiss
 information like the date, emission source, activity details, quantity of emissions, and the emission factor applied.
 This table allows for tracking emissions trends, ensuring accurate reporting, and auditing the organization's 
 environmental impact. It is essential for monitoring real-time emissions and generating reports based on historical data.
+
+## License
+
+[MIT](LICENSE)
