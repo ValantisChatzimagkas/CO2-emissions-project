@@ -1,7 +1,0 @@
-pandas
-sqlalchemy
-psycopg2-binary
-pytest
-python-dotenv
-loguru
-Faker
