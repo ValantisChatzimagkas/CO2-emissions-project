@@ -1,34 +1,35 @@
-version: '3'
 services:
   db:
-    image: postgres:latest
-    container_name: postgres_container
+    image: postgres:16
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: emission_db
+      POSTGRES_USER: ${DB_USER:-emission}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-emission}
+      POSTGRES_DB: ${DB_NAME:-emission_db}
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the SQL script
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
-    networks:
-      - emission_network
+      - "${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
 
-  synthetic_data_generation:
+  generator:
     build: .
-    container_name: python_container
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: emission_db
-    networks:
-      - emission_network
-    command: ["python", "synthetic_data_generation/generate_data.py"]
+      DB_PORT: 5432  # container-internal port; DB_PORT above is the host mapping
+      DB_USER: ${DB_USER:-emission}
+      DB_PASSWORD: ${DB_PASSWORD:-emission}
+      DB_NAME: ${DB_NAME:-emission_db}
+    command: >
+      sh -c "python -m synthetic_data_generation.generate_data &&
+             python -m synthetic_data_generation.report"
 
-networks:
-  emission_network:
-    driver: bridge
+volumes:
+  pgdata:
